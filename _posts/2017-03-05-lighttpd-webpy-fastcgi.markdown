@@ -1,6 +1,8 @@
 ---
-title: lighttpd + web.py + fastcgi server
 layout: post
+title: lighttpd + web.py + fastcgi server
+date:   2017-03-05 05:42:26 -0500
+categories: jekyll update
 ---
 
 # lighttpd + web.py + fastcgi(flup)服务器搭建
