@@ -13,7 +13,9 @@ fastcgi完成webserver到web.py的转换，flup其实是实现fastcgi的库。
 
 # 参考
 [wsgi tutor](http://wsgi.tutorial.codepoint.net/application-interface)
+
 [relation bewteen server middleware and client](https://en.wikipedia.org/wiki/Web_Server_Gateway_Interface)
+
 [install and config](http://webpy.org/cookbook/fastcgi-lighttpd)
 
 按照安装手册，看着非常简单，但是发现web.py单独可以运行，通过fcgi却死活运行不了，于是学习了下wsgi相关原理。
