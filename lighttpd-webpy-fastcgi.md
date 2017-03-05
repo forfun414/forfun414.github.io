@@ -6,7 +6,9 @@ layout: post
 # lighttpd + web.py + fastcgi(flup)服务器搭建
 
 lighttpd作为webserver；
+
 web.py是一个轻量级的web框架，开发者可以基于此开发出非常简单的程序，所以服务器的实现最终都是通过web.py；
+
 fastcgi完成webserver到web.py的转换，flup其实是实现fastcgi的库。
 
 # 参考
