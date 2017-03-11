@@ -1,4 +1,11 @@
-Introduction to Android Things/Android Things入门
+---
+layout: post
+title: lighttpd + web.py + fastcgi server
+date:   2017-03-05 05:42:26 -0500
+categories: jekyll update
+---
+
+# Introduction to Android Things/Android Things入门
 
 Android Things是Google为IoT专门打造的操作系统，来源于Android，所以具备了Android的大部分特性。
 但是IoT不需要像手机或者平板一样支持多应用切换及消息通知等特性，所以Android Things相比Android更为简单。
