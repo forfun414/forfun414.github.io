@@ -1,6 +1,6 @@
 ---
 layout: post
-title: lighttpd + web.py + fastcgi server
+title: Introduction to Android Things
 date:   2017-03-05 05:42:26 -0500
 categories: jekyll update
 ---
@@ -10,33 +10,43 @@ categories: jekyll update
 Android Things是Google为IoT专门打造的操作系统，来源于Android，所以具备了Android的大部分特性。
 但是IoT不需要像手机或者平板一样支持多应用切换及消息通知等特性，所以Android Things相比Android更为简单。
 传统Android开发其实涉及两部分：OS开发和APP开发，而Android Things基本上侧重在APP开发，OS的开发由Google完成了，并直接提供针对开发板的镜像。
+
 这种方式为整个系统的兼容性带来了非常大的好处：
+
 不会由于第三方OS的开发带来稳定性和兼容性问题；
-同时OS镜像可以通过OTA完成升级，大大减少了系统碎片化的可能以及安全性的问题。
-这可以从Android亲儿子Nexus手机一直都能体验最新版Android系统可见一斑。
+同时OS镜像可以通过OTA完成升级，大大减少了系统碎片化的可能以及安全性的问题。这可以从Android亲儿子Nexus手机一直都能体验最新版Android系统可见一斑。
 
 不过这也带来了一些不足：
+
 开发依赖于开发板，但是目前支持的开发板有限，现在有Intel Edison，Intel Joule，NXP Pico i.MX6UL，以及Raspberry Pi 3；
 不完全开源就意味着不能随意定制，特别是对于硬件有特殊定制需求的应用场景。
 
-本文主要是针对https://developer.android.com/things的总结和提炼，旨在帮助读者全面的了解Android Things。
+
+本文主要是针对https://developer.android.com/things 的总结和提炼，旨在帮助读者全面的了解Android Things。
 要求读者对Android有基本的了解，文中代码经过精简，意在概括性的说明相关内容。
 
 主要包括：
 ## 相对于Android的主要变化
 ## Peripheral I/O API
-## User Driver API，
-  其中这两部分API是Android Things开发中最重要的两个部分。
+## User Driver API
+  最后这两部分API是Android Things开发中最重要的两个部分。
 
 
 #1 相对于Android的主要变化
-## 显示为可选项，
+## 显示为可选项
+  Iot设备可能不一定需要像Android设备那样需要显示界面，所以显示是可选项。所有的消息和事件都仍然会发送给前台应用。
+
 ## 不包括状态栏和导航键
-  这样前台应用可以完全控制用户交互。
-由于所有的消息和事件只会发送给前台应用，所以在service中是无法处理这些消息的。
-前台应用就是桌面应用，它接收action.MAIN，并且需要包括category:CATEGORY_DEFAULT and IOT_LAUNCHER.,
-不过为了方便Android Studio调试，额外增加了CATEGORY_LAUNCHER的Filter。
-'''
+  Iot的交互相对简单，所以Android Things去掉了状态栏和导航键，这样前台应用可以占用全部的交互界面。
+
+## 不包括notifiations
+  由于没有状态栏，所以也没有消息通知。
+
+## 桌面应用设置方式调整
+  桌面应用同样接收action.MAIN，但是filteer不一样，并且需要包括category:CATEGORY_DEFAULT and IOT_LAUNCHER.,
+不过为了方便Android Studio调试，要额外增加原Androi的filter。
+
+```
 <application
     android:label="@string/app_name">
     <activity android:name=".HomeActivity">
@@ -54,41 +64,41 @@ Android Things是Google为IoT专门打造的操作系统，来源于Android，�
         </intent-filter>
     </activity>
 </application>
-'''
+```
 
 ## 不包括RuntimePermission
-## 不包括notifiations
-
+  应用安装时就获取需要的各种权限。
 
 #2 Peripheral I/O API
-用来控制io设备，包括GPIO, PWM, I2C, SPI, UART等。主要是通过PeripheralManagerService的各个接口完成
+  用来控制io设备，包括GPIO, PWM, I2C, SPI, UART等。主要是通过PeripheralManagerService的各个接口完成
 
 ##1 获取IO列表
-'''
+
+```
 getGpioList();
 getPwmList();
 getI2CBusList();
 getSpiBusList();
   //片选信号CS0, CS1, and CS2将以"SPI0.0", "SPI0.1", and "SPI0.2"形式返回
 getUartDeviceList();
-'''
+```
 
 ##2 接口打开和设置
-'''
+```
 PeripheralManagerService manager = new PeripheralManagerService();
 mGpio = manager.openGpio(GPIO_NAME);
 mGpio.setDirection(Gpio.DIRECTION_IN);
 mGpio.setActiveType(Gpio.ACTIVE_HIGH);
-...
+```
 
 ##3 接口使用
-'''
+```
 mGpio.getValue()
 mGpio.setValue(true); 
-'''
+```
 
 ##4 回调方式
-'''
+```
 mGpio.setDirection(Gpio.DIRECTION_IN);
 mGpio.setActiveType(Gpio.ACTIVE_LOW);
 mGpio.setEdgeTriggerType(Gpio.EDGE_BOTH);
@@ -102,7 +112,7 @@ private GpioCallback mGpioCallback = new GpioCallback() {
         // Continue listening for more interrupts
         return true;
     }
-'''
+```
 
 
 # 3 User Driver API
@@ -111,7 +121,7 @@ private GpioCallback mGpioCallback = new GpioCallback() {
 
 ##1 keyinput
 注册
-'''
+```
 mButtonInputDriver = new ButtonInputDriver(
                     GPIO_PIN_NAME,
                     Button.LogicState.PRESSED_WHEN_LOW,
@@ -119,7 +129,7 @@ mButtonInputDriver = new ButtonInputDriver(
                     
 
 mButtonInputDriver.register();
-'''
+```
 
 驱动处理和封装
 keyinput太简单，驱动不需要额外处理，这部分省略
@@ -129,7 +139,7 @@ keyinput太简单，驱动不需要额外处理，这部分省略
 
 ##2 motion input
 注册
-'''
+```
 InputDriver mDriver = InputDriver.builder(InputDevice.SOURCE_TOUCHPAD)
         .setName(DRIVER_NAME)
         .setVersion(DRIVER_VERSION)
@@ -139,33 +149,33 @@ InputDriver mDriver = InputDriver.builder(InputDevice.SOURCE_TOUCHPAD)
 
 UserDriverManager manager = UserDriverManager.getManager();
 manager.registerInputDriver(mDriver);
-'''
+```
 
 驱动处理和封装
-'''
+```
 mDriver.emit(x, y, pressed)
-'''
+```
 //触摸事件xy上报后，emit发送至框架，从而可以以Android标准motion event事件上报。
 
 
 ##3 GPS
 注册
-'''
+```
 GpsDriver mDriver = new GpsDriver();
 UserDriverManager manager = UserDriverManager.getManager();
 manager.registerGpsDriver(mDriver);
-'''
+```
 
 驱动处理和封装
-'''
+```
 Location location = parseLocationFromString(rawGpsData);
 mDriver.reportLocation(location);
-'''
+```
 收到原始的gps数据，经过封装和处理，报告给userdrivermanager，从而以Android gps框架事件上报
             
 ##4 sensor
 初始化userdriver
-'''
+```
 UserSensorDriver mDriver = new UserSensorDriver() {
     // Sensor data values
     float x, y, z;
@@ -175,21 +185,21 @@ UserSensorDriver mDriver = new UserSensorDriver() {
         return new UserSensorReading(new float[]{x, y, z});
     }
 };
-'''
+```
 
 注册
 
-'''
+```
 UserSensor accelerometer = UserSensor.builder()
         .setName("GroveAccelerometer")
         .setVendor("Seeed")
         .setType(Sensor.TYPE_ACCELEROMETER)
         .setDriver(mDriver)
         .build();
-'''
+```
 
   非默认传感器的注册稍微有些不一样
-'''
+```
 UserSensor custom = UserSensor.builder()
         .setName("MySensor")
         .setVendor("MyCompany")
@@ -198,15 +208,15 @@ UserSensor custom = UserSensor.builder()
                 Sensor.REPORTING_MODE_CONTINUOUS)
         .setDriver(mDriver)
         .build();
-'''
+```
         
 
 驱动处理和封装
-'''
+```
     public UserSensorReading read() {
         return new UserSensorReading(new float[]{x, y, z});
     }
-'''
+```
 其实主要在UserSensorReading里面实现，这个是在userdriver初始化部分定义的。
 这里的read是以应用程序为视角的，非驱动视角。
 每当应用程序发起读sensor请求时，Android Things框架就会调用到用户空间的这个read函数，这里再从真正的硬件去获取真正的数据。
