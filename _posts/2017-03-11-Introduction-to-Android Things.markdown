@@ -222,7 +222,7 @@ UserSensor custom = UserSensor.builder()
 其实主要封装是在UserSensorReading里面实现，它是在userdriver初始化部分定义的。这里的read是以应用程序为视角的，非驱动视角。
 每当应用程序发起读sensor请求时，Android Things框架就会调用到用户空间的这个read函数，这里再从真正的硬件去获取实际的外部数据。
 
-## 这里需要特别说明的是，它不仅可以用来处理Android已支持的传感器，也可以处理IoT实际使用的新类型传感器，如血压计等，这也是userspacedriver最重要的意义，通过这些接口完成Android Things对新型传感器的快速兼容。
+### 这里需要特别说明的是，它不仅可以用来处理Android已支持的传感器，也可以处理IoT实际使用的新类型传感器，如血压计等，这也是userspacedriver最重要的意义，通过这些接口完成Android Things对新型传感器的快速兼容。
 当然这里面最关键的是driver怎么实现，这部分依赖Peripheral Driver Library，可以参考https://github.com/androidthings/contrib-drivers
 
 更多开源代码参考https://github.com/androidthings
