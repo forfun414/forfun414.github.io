@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Introduction to Android Things
-date:   2017-03-011 21:00:08 +0800
+date:   2017-03-11 21:00:08 +0800
 categories: jekyll update
 ---
 
